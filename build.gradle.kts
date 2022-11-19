@@ -14,10 +14,12 @@ repositories {
     google()
     mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
     implementation(compose.desktop.currentOs)
+    implementation("com.github.vidstige:jadb:v1.2.1")
 }
 
 tasks.withType<KotlinCompile>() {
