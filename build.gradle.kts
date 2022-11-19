@@ -19,6 +19,7 @@ repositories {
 
 dependencies {
     implementation(compose.desktop.currentOs)
+    implementation(compose.materialIconsExtended)
     implementation("com.github.vidstige:jadb:v1.2.1")
 }
 
