@@ -21,6 +21,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.CopyAll
 import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.material.icons.twotone.Folder
+import androidx.compose.material.icons.twotone.UploadFile
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -39,6 +40,7 @@ import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.onPointerEvent
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
@@ -49,10 +51,11 @@ import kotlinx.coroutines.withContext
 import se.vidstige.jadb.JadbConnection
 import se.vidstige.jadb.JadbDevice
 import se.vidstige.jadb.RemoteFile
+import javax.swing.JFileChooser
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun App() {
+fun FrameWindowScope.App() {
     Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
         val coroutines = rememberCoroutineScope { Dispatchers.IO }
 
@@ -116,7 +119,7 @@ fun App() {
                         text = path,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.Gray)
+                            .background(Color.LightGray)
                             .padding(4.dp)
                     )
                 }
@@ -152,6 +155,16 @@ fun App() {
                                     println(message)
                                 version++
                             }
+                        },
+                        onUploadClick = {
+                            val home = System.getProperty("user.home")
+                            val fileChooser = JFileChooser(home).apply {
+                                fileSelectionMode = JFileChooser.FILES_AND_DIRECTORIES
+                            }
+
+                            fileChooser.showOpenDialog(window)
+                            val result = fileChooser.selectedFile
+                            println(result)
                         })
                 }
             }
@@ -174,6 +187,7 @@ private fun FileItem(
     onSelect: () -> Unit,
     onDelete: () -> Unit,
     onDuplicate: () -> Unit,
+    onUploadClick: () -> Unit,
 ) {
     var showPopUp by remember { mutableStateOf(false) }
 
@@ -207,6 +221,16 @@ private fun FileItem(
                         content = {
                             Icon(imageVector = Icons.TwoTone.CopyAll, contentDescription = null)
                             Text(text = "Duplicate")
+                        })
+
+                    PopupItem(
+                        onClick = {
+                            onUploadClick()
+                            showPopUp = false
+                        },
+                        content = {
+                            Icon(imageVector = Icons.TwoTone.UploadFile, contentDescription = null)
+                            Text(text = "Upload")
                         })
                 }
             }
