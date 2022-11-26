@@ -51,7 +51,7 @@ import kotlinx.coroutines.withContext
 import se.vidstige.jadb.JadbConnection
 import se.vidstige.jadb.JadbDevice
 import se.vidstige.jadb.RemoteFile
-import javax.swing.JFileChooser
+import java.awt.FileDialog
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -157,14 +157,12 @@ fun FrameWindowScope.App() {
                             }
                         },
                         onUploadClick = {
-                            val home = System.getProperty("user.home")
-                            val fileChooser = JFileChooser(home).apply {
-                                fileSelectionMode = JFileChooser.FILES_AND_DIRECTORIES
-                            }
-
-                            fileChooser.showOpenDialog(window)
-                            val result = fileChooser.selectedFile
-                            println(result)
+                            val fileDialog = FileDialog(this@App.window).apply {
+                                directory = System.getProperty("user.home")
+                                isMultipleMode = true
+                            }.also { it.isVisible = true }
+                            val selectedFiles = fileDialog.files.toList()
+                            println(selectedFiles)
                         })
                 }
             }
