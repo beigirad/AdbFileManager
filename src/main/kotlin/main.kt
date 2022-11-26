@@ -163,6 +163,13 @@ fun FrameWindowScope.App() {
                             }.also { it.isVisible = true }
                             val selectedFiles = fileDialog.files.toList()
                             println(selectedFiles)
+                            coroutines.launch {
+                                selectedFiles.forEach { file ->
+                                    selectedDevice!!.push(file, RemoteFile(path + "/" + file.name))
+                                    println("uploaded $file")
+                                    version++
+                                }
+                            }
                         })
                 }
             }
