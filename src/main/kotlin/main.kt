@@ -20,6 +20,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.CopyAll
 import androidx.compose.material.icons.twotone.Delete
+import androidx.compose.material.icons.twotone.FileDownload
 import androidx.compose.material.icons.twotone.Folder
 import androidx.compose.material.icons.twotone.UploadFile
 import androidx.compose.runtime.Composable
@@ -170,6 +171,21 @@ fun FrameWindowScope.App() {
                                     version++
                                 }
                             }
+                        },
+                        onDownloadClick = {
+                            val fileDialog = FileDialog(this@App.window).apply {
+                                directory = System.getProperty("user.home")
+                                mode = FileDialog.SAVE
+                                this.file = file.path
+                            }.also { it.isVisible = true }
+                            val destinationFile = fileDialog.files.firstOrNull() ?: return@FileItem
+                            val sourceFile = RemoteFile(path + "/" + file.path)
+
+                            println("download started. source=${sourceFile.path} destination=$destinationFile")
+                            coroutines.launch {
+                                selectedDevice!!.pull(sourceFile, destinationFile)
+                                println("downloaded $file")
+                            }
                         })
                 }
             }
@@ -193,6 +209,7 @@ private fun FileItem(
     onDelete: () -> Unit,
     onDuplicate: () -> Unit,
     onUploadClick: () -> Unit,
+    onDownloadClick: () -> Unit,
 ) {
     var showPopUp by remember { mutableStateOf(false) }
 
@@ -236,6 +253,16 @@ private fun FileItem(
                         content = {
                             Icon(imageVector = Icons.TwoTone.UploadFile, contentDescription = null)
                             Text(text = "Upload")
+                        })
+
+                    PopupItem(
+                        onClick = {
+                            onDownloadClick()
+                            showPopUp = false
+                        },
+                        content = {
+                            Icon(imageVector = Icons.TwoTone.FileDownload, contentDescription = null)
+                            Text(text = "Download")
                         })
                 }
             }
