@@ -71,10 +71,15 @@ fun FrameWindowScope.App() {
 
         var fullPath by remember { mutableStateOf(listOf("")) }
 
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier
+                .width(200.dp)
+                .fillMaxHeight()
+        ) {
             items(devices) {
                 val isSelected by rememberUpdatedState(selectedDevice == it)
                 Column(modifier = Modifier
+                    .fillMaxWidth()
                     .clickable {
                         selectedDevice = it
                         fullPath = listOf("")
