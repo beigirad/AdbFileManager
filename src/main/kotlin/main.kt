@@ -2,27 +2,31 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.CopyAll
 import androidx.compose.material.icons.twotone.Delete
 import androidx.compose.material.icons.twotone.FileDownload
 import androidx.compose.material.icons.twotone.Folder
 import androidx.compose.material.icons.twotone.UploadFile
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -35,7 +39,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventType
 import androidx.compose.ui.input.pointer.isSecondaryPressed
 import androidx.compose.ui.input.pointer.onPointerEvent
@@ -84,10 +87,22 @@ fun FrameWindowScope.App() {
                         selectedDevice = it
                         fullPath = listOf("")
                     }
-                    .background(if (isSelected) Color.LightGray else Color.Transparent)
+                    .background(
+                        if (isSelected) MaterialTheme.colorScheme.secondary
+                        else MaterialTheme.colorScheme.secondaryContainer
+                    )
                 ) {
-                    Text(text = it.state.toString())
-                    Text(text = it.serial)
+                    val textColor =
+                        if (isSelected) MaterialTheme.colorScheme.onSecondary
+                        else MaterialTheme.colorScheme.onSecondaryContainer
+                    Text(
+                        color = textColor,
+                        text = it.state.toString()
+                    )
+                    Text(
+                        color = textColor,
+                        text = it.serial
+                    )
                 }
             }
         }
@@ -96,7 +111,7 @@ fun FrameWindowScope.App() {
             modifier = Modifier
                 .fillMaxHeight()
                 .width(1.dp)
-                .background(Color.DarkGray)
+                .background(MaterialTheme.colorScheme.secondary)
         )
         fullPath.forEachIndexed { index, pathSection ->
             var folders by remember { mutableStateOf(listOf<RemoteFile>()) }
@@ -123,9 +138,10 @@ fun FrameWindowScope.App() {
                 stickyHeader {
                     Text(
                         text = path,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(Color.LightGray)
+                            .background(MaterialTheme.colorScheme.secondaryContainer)
                             .padding(4.dp)
                     )
                 }
@@ -199,7 +215,7 @@ fun FrameWindowScope.App() {
                 modifier = Modifier
                     .fillMaxHeight()
                     .width(1.dp)
-                    .background(Color.Black)
+                    .background(MaterialTheme.colorScheme.outline)
             )
         }
     }
@@ -224,7 +240,7 @@ private fun FileItem(
             focusable = true,
             popupPositionProvider = rememberCursorPositionProvider()
         ) {
-            Card {
+            androidx.compose.material.Card {
                 Column(
                     modifier = Modifier
                         .width(150.dp)
@@ -278,8 +294,11 @@ private fun FileItem(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .background(if (isSelected) Color.LightGray else Color.Transparent)
+            .clip(androidx.compose.material.MaterialTheme.shapes.medium)
+            .background(
+                if (isSelected) MaterialTheme.colorScheme.secondary
+                else MaterialTheme.colorScheme.secondaryContainer
+            )
             .clickable {
                 onSelect()
             }
@@ -296,6 +315,9 @@ private fun FileItem(
 
         Text(
             text = file.path,
+            color =
+            if (isSelected) MaterialTheme.colorScheme.onSecondary
+            else MaterialTheme.colorScheme.onSecondaryContainer,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -311,7 +333,7 @@ private fun PopupItem(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .clip(MaterialTheme.shapes.small)
+            .clip(androidx.compose.material.MaterialTheme.shapes.small)
             .clickable(onClick = onClick)
             .padding(4.dp),
         content = content
@@ -320,8 +342,12 @@ private fun PopupItem(
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
-        MaterialTheme {
-            App()
+        MaterialTheme(
+            colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
+        ) {
+            Surface(modifier = Modifier.fillMaxSize()) {
+                App()
+            }
         }
     }
 }

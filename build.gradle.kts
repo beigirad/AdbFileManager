@@ -20,10 +20,12 @@ repositories {
 dependencies {
     implementation(compose.desktop.currentOs)
     implementation(compose.materialIconsExtended)
+    @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+    implementation(compose.material3)
     implementation("com.github.vidstige:jadb:v1.2.1")
 }
 
-tasks.withType<KotlinCompile>() {
+tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "11"
 }
 
