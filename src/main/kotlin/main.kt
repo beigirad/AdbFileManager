@@ -342,7 +342,10 @@ private fun PopupItem(
 }
 
 fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
+    Window(
+        onCloseRequest = ::exitApplication,
+        title = "AdbFileExplorer"
+    ) {
         MaterialTheme(
             colorScheme = if (isSystemInDarkTheme()) darkColorScheme() else lightColorScheme()
         ) {
