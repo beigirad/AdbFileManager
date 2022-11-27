@@ -107,12 +107,8 @@ fun FrameWindowScope.App() {
             }
         }
 
-        Spacer(
-            modifier = Modifier
-                .fillMaxHeight()
-                .width(1.dp)
-                .background(MaterialTheme.colorScheme.outline)
-        )
+        HorizontalDivider()
+
         fullPath.forEachIndexed { index, pathSection ->
             var folders by remember { mutableStateOf(listOf<RemoteFile>()) }
             var version by remember { mutableStateOf(0) }
@@ -211,14 +207,19 @@ fun FrameWindowScope.App() {
                 }
             }
 
-            Spacer(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(1.dp)
-                    .background(MaterialTheme.colorScheme.outline)
-            )
+            HorizontalDivider()
         }
     }
+}
+
+@Composable
+private fun HorizontalDivider() {
+    Spacer(
+        modifier = Modifier
+            .fillMaxHeight()
+            .width(1.dp)
+            .background(MaterialTheme.colorScheme.outline)
+    )
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
