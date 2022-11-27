@@ -1,0 +1,4 @@
+-dontwarn kotlinx.**
+-dontwarn org.mockito.**
+-dontwarn org.jetbrains.**
+-dontwarn net.bytebuddy.**

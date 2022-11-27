@@ -37,5 +37,8 @@ compose.desktop {
             packageName = "AdbFileExplorer"
             packageVersion = "1.0.0"
         }
+        buildTypes.release.proguard {
+            configurationFiles.from("rules.pro")
+        }
     }
 }
