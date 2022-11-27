@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.Card
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.CopyAll
 import androidx.compose.material.icons.twotone.Delete
@@ -56,6 +57,7 @@ import se.vidstige.jadb.JadbConnection
 import se.vidstige.jadb.JadbDevice
 import se.vidstige.jadb.RemoteFile
 import java.awt.FileDialog
+import androidx.compose.material.MaterialTheme as MaterialTheme1
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -240,7 +242,7 @@ private fun FileItem(
             focusable = true,
             popupPositionProvider = rememberCursorPositionProvider()
         ) {
-            androidx.compose.material.Card {
+            Card {
                 Column(
                     modifier = Modifier
                         .width(150.dp)
@@ -294,7 +296,7 @@ private fun FileItem(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .clip(androidx.compose.material.MaterialTheme.shapes.medium)
+            .clip(MaterialTheme1.shapes.medium)
             .background(
                 if (isSelected) MaterialTheme.colorScheme.secondary
                 else MaterialTheme.colorScheme.secondaryContainer
@@ -333,7 +335,7 @@ private fun PopupItem(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .clip(androidx.compose.material.MaterialTheme.shapes.small)
+            .clip(MaterialTheme1.shapes.small)
             .clickable(onClick = onClick)
             .padding(4.dp),
         content = content
