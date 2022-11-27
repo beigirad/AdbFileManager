@@ -23,12 +23,15 @@ import androidx.compose.material.icons.twotone.FileDownload
 import androidx.compose.material.icons.twotone.Folder
 import androidx.compose.material.icons.twotone.UploadFile
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -89,14 +92,9 @@ fun FrameWindowScope.App() {
                         selectedDevice = it
                         fullPath = listOf("")
                     }
-                    .background(
-                        if (isSelected) MaterialTheme.colorScheme.secondary
-                        else MaterialTheme.colorScheme.secondaryContainer
-                    )
+                    .then(if (isSelected) Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier)
                 ) {
-                    val textColor =
-                        if (isSelected) MaterialTheme.colorScheme.onSecondary
-                        else MaterialTheme.colorScheme.onSecondaryContainer
+                    val textColor = contentColorFor(MaterialTheme.colorScheme.primaryContainer)
                     Text(
                         color = textColor,
                         text = it.state.toString()
@@ -113,7 +111,7 @@ fun FrameWindowScope.App() {
             modifier = Modifier
                 .fillMaxHeight()
                 .width(1.dp)
-                .background(MaterialTheme.colorScheme.secondary)
+                .background(MaterialTheme.colorScheme.outline)
         )
         fullPath.forEachIndexed { index, pathSection ->
             var folders by remember { mutableStateOf(listOf<RemoteFile>()) }
@@ -242,7 +240,7 @@ private fun FileItem(
             focusable = true,
             popupPositionProvider = rememberCursorPositionProvider()
         ) {
-            Card {
+            Card(backgroundColor = MaterialTheme.colorScheme.surfaceVariant) {
                 Column(
                     modifier = Modifier
                         .width(150.dp)
@@ -297,10 +295,7 @@ private fun FileItem(
         modifier = Modifier
             .fillMaxWidth()
             .clip(MaterialTheme1.shapes.medium)
-            .background(
-                if (isSelected) MaterialTheme.colorScheme.secondary
-                else MaterialTheme.colorScheme.secondaryContainer
-            )
+            .then(if (isSelected) Modifier.background(MaterialTheme.colorScheme.primaryContainer) else Modifier)
             .clickable {
                 onSelect()
             }
@@ -312,17 +307,18 @@ private fun FileItem(
             }
             .padding(4.dp)
     ) {
-        if (file.isDirectory)
-            Icon(imageVector = Icons.TwoTone.Folder, contentDescription = null)
+        CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onPrimaryContainer) {
+            if (file.isDirectory) {
+                Icon(imageVector = Icons.TwoTone.Folder, contentDescription = null)
+                Spacer(Modifier.width(2.dp))
+            }
 
-        Text(
-            text = file.path,
-            color =
-            if (isSelected) MaterialTheme.colorScheme.onSecondary
-            else MaterialTheme.colorScheme.onSecondaryContainer,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+            Text(
+                text = file.path,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }
 
@@ -331,15 +327,17 @@ private fun PopupItem(
     onClick: () -> Unit,
     content: @Composable RowScope.() -> Unit
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme1.shapes.small)
-            .clickable(onClick = onClick)
-            .padding(4.dp),
-        content = content
-    )
+    CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onPrimaryContainer) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme1.shapes.small)
+                .clickable(onClick = onClick)
+                .padding(4.dp),
+            content = content
+        )
+    }
 }
 
 fun main() = application {
